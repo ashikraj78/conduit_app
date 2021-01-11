@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import useFetch from "../hooks/useFetch";
 import { ROOT_URL } from "../utils/constants";
 import SingleArticle from "./SingleArticle";
+import { NavLink } from "react-router-dom";
 
 function Articles() {
   let [response, error] = useFetch(ROOT_URL + "articles");
 
   if (response) {
     return (
-      <div className="bg-white pt-6 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+      <div className="bg-white pt-2 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+        <NavLink to="/article" className="ml-20 mb-10">
+          <button className="py-2 px-4  text-sm  font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500">
+            Add Article
+          </button>
+        </NavLink>
         <div className="relative max-w-6xl mx-auto lg:max-w-7xl">
           <div>
             <h2 className="text-3xl leading-9 tracking-tight font-extrabold text-gray-900 sm:text-4xl sm:leading-10">

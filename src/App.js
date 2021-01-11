@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { ROOT_URL } from "./utils/constants";
+import UserContext from "./components/UserContext";
 import Header from "./components/Header";
 import Home from "./components/Home";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
-import UserContext from "./components/UserContext";
-import { ROOT_URL } from "./utils/constants";
+import SingleArticlePage from "./components/SingleArticlePage";
+import AddArticle from "./components/AddArticle";
 
 function App(props) {
   let [user, setUser] = useState(null);
@@ -38,6 +40,12 @@ function App(props) {
               activeModel={activeModel}
               close={close}
             />
+          </Route>
+          <Route path="/article" exact>
+            <AddArticle />
+          </Route>
+          <Route path="/article/:slug">
+            <SingleArticlePage />
           </Route>
         </Switch>
       </UserContext.Provider>

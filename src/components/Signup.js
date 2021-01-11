@@ -1,35 +1,102 @@
-import React from "react";
-function Signup() {
+import React, { useContext } from "react";
+import { useFormik } from "formik";
+import UserContext from "./UserContext";
+import { ROOT_URL } from "../utils/constants";
+
+function validator(values) {
+  const errors = {};
+  if (!values.username) {
+    errors.username = "*Username is required";
+  }
+  if (!values.email) {
+    errors.email = "*Email is required";
+  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
+    errors.email = "Invalid email address";
+  }
+  if (!values.password) {
+    errors.password = "*Password is required";
+  }
+  return errors;
+}
+
+function Signup(props) {
+  const { handleSubmit, handleChange, values, errors } = useFormik({
+    initialValues: {
+      username: "",
+      email: "",
+      password: "",
+    },
+    validateOnBlur: false,
+    validateOnChange: false,
+    validate: validator,
+    onSubmit: (values) => {
+      handleClick();
+      props.close();
+    },
+  });
+
+  let context = useContext(UserContext);
+  function handleClick() {
+    fetch(ROOT_URL + "users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user: values }),
+    })
+      .then((res) => res.json())
+      .then(({ user }) => {
+        context.setUser(user);
+        localStorage.setItem("token", user.token);
+      })
+      .catch((_error) => context.setUser(null));
+  }
+
   return (
     <div class="flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 signup">
       <div class="max-w-md w-full bg-white p-10">
         <div>
           <h2 class="mt-6 text-center text-3xl leading-9 font-extrabold text-gray-900">
-            Signup your account
+            Signup for Free
           </h2>
         </div>
-        <form class="mt-8" action="#" method="POST">
+        <form class="mt-8" onSubmit={handleSubmit}>
           <input type="hidden" name="remember" value="true" />
           <div class="rounded-md shadow-sm">
             <div>
               <input
                 aria-label="Email address"
+                name="username"
+                type="text"
+                value={values.username}
+                onChange={handleChange}
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5 mb-2"
+                placeholder="User Name"
+              />
+              <small className="pb-10 text-red-700">{errors.username}</small>
+            </div>
+            <div>
+              <input
+                aria-label="Email address"
                 name="email"
-                type="email"
-                required
-                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
+                value={values.email}
+                onChange={handleChange}
+                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5"
                 placeholder="Email address"
               />
+              <small className="pb-10 text-red-700">{errors.email}</small>
             </div>
             <div class="-mt-px">
               <input
                 aria-label="Password"
                 name="password"
                 type="password"
-                required
+                value={values.password}
+                onChange={handleChange}
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 sm:text-sm sm:leading-5 mt-2"
                 placeholder="Password"
               />
+              <small className="pb-10 text-red-700">{errors.password}</small>
             </div>
           </div>
 

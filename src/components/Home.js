@@ -22,7 +22,7 @@ function Home({ showDialog, close, activeModel }) {
       <Dialog isOpen={showDialog} onDismiss={close} className="flex-1">
         <button className="close-button" onClick={close}>
           <VisuallyHidden>Close</VisuallyHidden>
-          <span aria-hidden>×</span>
+          <span arial-hidden>×</span>
         </button>
         {showModel(activeModel, close)}
       </Dialog>
